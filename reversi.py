@@ -1,12 +1,12 @@
-from PyQt5.QtGui import QColor, QFont
 import sys
 
 from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtGui import QIcon, QDesktopServices
 from PyQt5.QtWidgets import QAction, QWidget, QDesktopWidget, QApplication, QMainWindow
 from PyQt5.QtWidgets import QMessageBox, QHBoxLayout, QLabel, QPushButton, QColorDialog, qApp, QTextBrowser
 
-square = [0, 60, 120, 180, 240, 300, 36, 42]
+square = []
 
 
 class MainWindow(QMainWindow):
@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
         self.statusBar()
         self.setStyleSheet("background-color: lightgray")
         self.center()
-        self.setFixedSize(800, 600)
+        self.setFixedSize(900, 600)
         self.setWindowTitle('Reverse Othello')
         self.setWindowIcon(QIcon('./image/Othello icon.png'))
         self.show()
@@ -70,7 +70,7 @@ class Reversi(QWidget):
         self.initGrapic()
 
     def initGrapic(self):
-        plates = QColor(10, 138, 65)
+        #plates = QColor(10, 138, 65)
 
         positionInRow = QHBoxLayout()
 
@@ -80,43 +80,24 @@ class Reversi(QWidget):
         positionInRow.addWidget(self.gameInfo)
 
         self.gameBoard.resize(500, 500)
-        self.gameBoard.setMinimumWidth(400)
+        self.gameBoard.setMinimumWidth(500)
         self.gameInfo.setMinimumWidth(200)
 
         self.setLayout(positionInRow)
+
+        self.gameBoard.setStyleSheet("background-color: seagreen")
+        self.gameInfo.setStyleSheet("background-color: yellowgreen")
 
         self.board()
 
     def board(self):
         self.plates = [[] for i in range(8)]
-        self.buttons = [[] for i in range(8)]
 
-        # m = 0
-        # n = 0
-        # for i in square:
-        #     for j in square:
-        #         self.buttons[m][n] = QPushButton(self.labelBoard)
-        #         self.buttons[m][n].resize(60, 60)
-        #         self.buttons[m][n].move(*(j, i))
-        #         self.buttons[m][n].setStyleSheet("""border-style: outset;
-        #                                       border-width: 5px;
-        #                                       border-radius: 4px;
-        #                                       border-color: gray
-        #                                       """)
-        #         if (m, n) == (3, 4) or (m, n) == (4, 3):
-        #             self.buttons[m][n].setIcon(QIcon("black.png"))
-        #             self.buttons[m][n].setIconSize(QSize(48, 48))
-        #         elif (m, n) == (3, 3) or (m, n) == (4, 4):
-        #             self.buttons[m][n].setIcon(QIcon("white.png"))
-        #             self.buttons[m][n].setIconSize(QSize(48, 48))
-        #         else:
-        #             self.zeroColTab.append((j, i))
-        #         tableCoords.append((j, i))
-        #         self.buttons[m][n].clicked.connect(self.reverse)
-        #         if n == 7:
-        #             m += 1
-        #             n = -1
-        #         n += 1
+        for i in square:
+            for j in square:
+                self.plates[i][j] = QPushButton(self.gameBoard)
+                self.plates[i][j].resize(60, 60)
+                self.plates[i][j].setStyleSheet("border-color: gray")
 
 
 if __name__ == "__main__":
