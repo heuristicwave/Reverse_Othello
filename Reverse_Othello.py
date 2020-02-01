@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtCore import QCoreApplication, QSize
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *  # QIcon
+from PyQt5.QtWidgets import *  # QApplication, QDesktopWidget, QMainWindow,
 from PyQt5 import uic
 
 # connect ui file in same path
@@ -21,9 +21,11 @@ class CreateGame(QMainWindow, form_class):
         self.BOARD_LEN = 8
         self.dx = [-1, -1, -1, 0, 0, 1, 1, 1]
         self.dy = [-1, 0, 1, -1, 1, -1, 0, 1]
-        self.plates = [[self.EMPTY_CELL for x in range(self.BOARD_LEN)]
-                       for y in range(self.BOARD_LEN)]
-        self.initGame()
+        self.plate = [[self.EMPTY_CELL for x in range(self.BOARD_LEN)]
+                      for y in range(self.BOARD_LEN)]
+        # self.initGame()
+
+        self.createBoard()
 
     def initGame(self):
 
@@ -46,25 +48,33 @@ class CreateGame(QMainWindow, form_class):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    def createBoard(self):
+        for i in range(self.BOARD_LEN):
+            for j in range(self.BOARD_LEN):
+                self.plate[i][j] = QPushButton("", self)
+                self.plate[i][j].move(60, 60)
+                self.plate[i][j].resize(60, 60)
 
-class Reversi(CreateGame):
 
-    def __init__(self):
-        super().__init__()
-        self.showMarker()
+# class Reversi(CreateGame):
 
-    def showMarker(self):
-        if self.plates[3][4] is self.BLACK_CELL:
-            self.plate_34.setIcon(QIcon("./image/black.png"))
-            self.plate_34.setIconSize(QSize(50, 50))
+#     def __init__(self):
+#         super().__init__()
+#         self.showMarker()
+
+#     def showMarker(self):
+
+#         if self.plates[3][4] is self.BLACK_CELL:
+#             self.plateq_34.setIcon(QIcon("./image/black.png"))
+#             self.plate_34.setIconSize(QSize(50, 50))
 
 
 if __name__ == '__main__':
     # QApplication : program start class
     app = QApplication(sys.argv)
-    # myWindow = CreateGame()  # create ReverseOthello instance
-    # myWindow.show()
-    myWindow2 = Reversi()  # create Reversi instance
-    myWindow2.show()
+    myWindow = CreateGame()  # create ReverseOthello instance
+    myWindow.show()
+    # myWindow2 = Reversi()  # create Reversi instance
+    # myWindow2.show()
     # Enters the program into the event loop (running the program)
     app.exec_()
