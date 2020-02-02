@@ -18,9 +18,9 @@ class CreateGame(QMainWindow, form_class):
         self.BLACK_CELL = 'b'
         self.WHITE_CELL = 'w'
         self.EMPTY_CELL = '0'
-        #self.turn = 'b'
         self.MY_CELL = 'b'
         self.OP_CELL = 'w'
+        #self.turn = 'b'
 
         self.BOARD_LEN = 8
         self.dx = [-1, -1, -1, 0, 0, 1, 1, 1]
@@ -34,6 +34,77 @@ class CreateGame(QMainWindow, form_class):
         self.initGame()
         self.findAvaliable()
         self.showMarker()
+        self.objectNameActivate()
+
+    def objectNameActivate(self):
+        # fix error using lambda (TypeError: argument 1 has unexpected type 'NoneType')
+        self.plate[0][0].clicked.connect(lambda: self.clickedButton(self.plate[0][0]))
+        self.plate[0][1].clicked.connect(lambda: self.clickedButton(self.plate[0][1]))
+        self.plate[0][2].clicked.connect(lambda: self.clickedButton(self.plate[0][2]))        
+        self.plate[0][3].clicked.connect(lambda: self.clickedButton(self.plate[0][3]))
+        self.plate[0][4].clicked.connect(lambda: self.clickedButton(self.plate[0][4]))
+        self.plate[0][5].clicked.connect(lambda: self.clickedButton(self.plate[0][5]))        
+        self.plate[0][6].clicked.connect(lambda: self.clickedButton(self.plate[0][6]))        
+        self.plate[0][7].clicked.connect(lambda: self.clickedButton(self.plate[0][7]))
+        self.plate[1][0].clicked.connect(lambda: self.clickedButton(self.plate[1][0]))
+        self.plate[1][1].clicked.connect(lambda: self.clickedButton(self.plate[1][1]))
+        self.plate[1][2].clicked.connect(lambda: self.clickedButton(self.plate[1][2]))
+        self.plate[1][3].clicked.connect(lambda: self.clickedButton(self.plate[1][3]))
+        self.plate[1][4].clicked.connect(lambda: self.clickedButton(self.plate[1][4]))
+        self.plate[1][5].clicked.connect(lambda: self.clickedButton(self.plate[1][5]))
+        self.plate[1][6].clicked.connect(lambda: self.clickedButton(self.plate[1][6]))
+        self.plate[1][7].clicked.connect(lambda: self.clickedButton(self.plate[1][7]))
+        self.plate[2][0].clicked.connect(lambda: self.clickedButton(self.plate[2][0]))
+        self.plate[2][1].clicked.connect(lambda: self.clickedButton(self.plate[2][1]))
+        self.plate[2][2].clicked.connect(lambda: self.clickedButton(self.plate[2][2]))        
+        self.plate[2][3].clicked.connect(lambda: self.clickedButton(self.plate[2][3]))
+        self.plate[2][4].clicked.connect(lambda: self.clickedButton(self.plate[2][4]))
+        self.plate[2][5].clicked.connect(lambda: self.clickedButton(self.plate[2][5]))        
+        self.plate[2][6].clicked.connect(lambda: self.clickedButton(self.plate[2][6]))        
+        self.plate[2][7].clicked.connect(lambda: self.clickedButton(self.plate[2][7]))
+        self.plate[3][0].clicked.connect(lambda: self.clickedButton(self.plate[3][0]))
+        self.plate[3][1].clicked.connect(lambda: self.clickedButton(self.plate[3][1]))
+        self.plate[3][2].clicked.connect(lambda: self.clickedButton(self.plate[3][2]))        
+        self.plate[3][3].clicked.connect(lambda: self.clickedButton(self.plate[3][3]))
+        self.plate[3][4].clicked.connect(lambda: self.clickedButton(self.plate[3][4]))
+        self.plate[3][5].clicked.connect(lambda: self.clickedButton(self.plate[3][5]))        
+        self.plate[3][6].clicked.connect(lambda: self.clickedButton(self.plate[3][6]))        
+        self.plate[3][7].clicked.connect(lambda: self.clickedButton(self.plate[3][7]))
+        self.plate[4][0].clicked.connect(lambda: self.clickedButton(self.plate[4][0]))
+        self.plate[4][1].clicked.connect(lambda: self.clickedButton(self.plate[4][1]))
+        self.plate[4][2].clicked.connect(lambda: self.clickedButton(self.plate[4][2]))        
+        self.plate[4][3].clicked.connect(lambda: self.clickedButton(self.plate[4][3]))
+        self.plate[4][4].clicked.connect(lambda: self.clickedButton(self.plate[4][4]))
+        self.plate[4][5].clicked.connect(lambda: self.clickedButton(self.plate[4][5]))        
+        self.plate[4][6].clicked.connect(lambda: self.clickedButton(self.plate[4][6]))        
+        self.plate[4][7].clicked.connect(lambda: self.clickedButton(self.plate[4][7]))
+        self.plate[5][0].clicked.connect(lambda: self.clickedButton(self.plate[5][0]))
+        self.plate[5][1].clicked.connect(lambda: self.clickedButton(self.plate[5][1]))
+        self.plate[5][2].clicked.connect(lambda: self.clickedButton(self.plate[5][2]))        
+        self.plate[5][3].clicked.connect(lambda: self.clickedButton(self.plate[5][3]))
+        self.plate[5][4].clicked.connect(lambda: self.clickedButton(self.plate[5][4]))
+        self.plate[5][5].clicked.connect(lambda: self.clickedButton(self.plate[5][5]))        
+        self.plate[5][6].clicked.connect(lambda: self.clickedButton(self.plate[5][6]))        
+        self.plate[5][7].clicked.connect(lambda: self.clickedButton(self.plate[5][7]))
+        self.plate[6][0].clicked.connect(lambda: self.clickedButton(self.plate[6][0]))
+        self.plate[6][1].clicked.connect(lambda: self.clickedButton(self.plate[6][1]))
+        self.plate[6][2].clicked.connect(lambda: self.clickedButton(self.plate[6][2]))        
+        self.plate[6][3].clicked.connect(lambda: self.clickedButton(self.plate[6][3]))
+        self.plate[6][4].clicked.connect(lambda: self.clickedButton(self.plate[6][4]))
+        self.plate[6][5].clicked.connect(lambda: self.clickedButton(self.plate[6][5]))        
+        self.plate[6][6].clicked.connect(lambda: self.clickedButton(self.plate[6][6]))        
+        self.plate[6][7].clicked.connect(lambda: self.clickedButton(self.plate[6][7]))
+        self.plate[7][0].clicked.connect(lambda: self.clickedButton(self.plate[7][0]))
+        self.plate[7][1].clicked.connect(lambda: self.clickedButton(self.plate[7][1]))
+        self.plate[7][2].clicked.connect(lambda: self.clickedButton(self.plate[7][2]))        
+        self.plate[7][3].clicked.connect(lambda: self.clickedButton(self.plate[7][3]))
+        self.plate[7][4].clicked.connect(lambda: self.clickedButton(self.plate[7][4]))
+        self.plate[7][5].clicked.connect(lambda: self.clickedButton(self.plate[7][5]))        
+        self.plate[7][6].clicked.connect(lambda: self.clickedButton(self.plate[7][6]))        
+        self.plate[7][7].clicked.connect(lambda: self.clickedButton(self.plate[7][7]))
+        # iterator로 아래처럼하면 소멸되어 7,7 만남음
+        # curPlate = self.plate[i][j]
+        # self.plate[i][j].clicked.connect(lambda: self.clickedButton(curPlate))
 
     # def cell_count(self):
     #     white = 0
@@ -54,21 +125,30 @@ class CreateGame(QMainWindow, form_class):
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
                 if self.plateStatus[i][j] == self.MY_CELL:
-                    print("find Black")
+                    print("find AVALIABLE")
                     for k in range(8):
                         x, y = i, j
+
                         # (i, j)를 기준으로 상하좌우 대각선을 dx, dy로 점검
                         while(self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.OP_CELL):
                             print(f'status : {k}')
                             x = x + self.dx[k]
                             y = y + self.dy[k]
+
                         if x == i and y == j:
                             continue
-                        elif self.plateStatus[x+self.dx[k]][y + self.dy[k]] == self.MY_CELL:
+                        elif self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.MY_CELL:
                             continue
-                        elif self.plateStatus[x+self.dx[k]][y + self.dy[k]] == self.EMPTY_CELL:
-                            self.avaliableLocation.append(
-                                [x + self.dx[k], y + self.dy[k]])  # 길이 2자리 배열을 통째로
+                        elif self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.EMPTY_CELL:
+                            cur_x = x+self.dx[k]
+                            cur_y = y+self.dy[k]
+                            # (0, -1) 같은게 안나오도록
+                            if cur_x < 0:
+                                cur_x = 0
+                            elif cur_y < 0:
+                                cur_y = 0
+
+                            self.avaliableLocation.append([cur_x, cur_y])
         return
 
     def initGame(self):
@@ -78,12 +158,18 @@ class CreateGame(QMainWindow, form_class):
         self.plateStatus[4][3] = self.BLACK_CELL
         # 정보 바탕으로 돌 그리기
 
-    def clickedButton(self, btn):
-        print(btn)
-        print('clicked')
-        position = btn.objectName()
+    def clearAvaliableLoc(self):
+        print('removing...')
+        for i in range(len(self.avaliableLocation)):
+            x = self.avaliableLocation[i][0]
+            y = self.avaliableLocation[i][1]
+            print(x,y)
+            self.plate[x][y].setIcon(QIcon())
+
+    def clickedButton(self, btn):        
+        self.clearAvaliableLoc() # 이미지 삭제
+        position = btn.objectName() # type(position) => <class 'str'>
         print(f'position : {position}')
-        print(type(position))
         x = int(position[0])
         y = int(position[1])
 
@@ -92,25 +178,23 @@ class CreateGame(QMainWindow, form_class):
         for i in range(8):
             self.updateBoard(x, y, i)
 
-        print('call show')
         print(self.plateStatus)
-        self.showMarker()
-
-        # self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL
-
         # self.findAvaliable()
-        # self.showMarker()
+
+        self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL
+
+        self.findAvaliable()
+        self.showMarker()
 
     def updateBoard(self, x, y, direction):
         if self.plateStatus[x][y] == self.MY_CELL:
-            print('found!!!')
+            print(f'{self.MY_CELL} found!!!')
             return 1
         elif self.plateStatus[x][y] == self.EMPTY_CELL:
             return 0
 
         cur_x = x
         cur_y = y
-
         cur_x = cur_x + self.dx[direction]
         cur_y = cur_y + self.dy[direction]
 
@@ -161,11 +245,8 @@ class CreateGame(QMainWindow, form_class):
     def createBoard(self):
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
-                #curPlate = self.plate[i][j]
                 self.plate[i][j] = QPushButton("", self)
                 self.plate[i][j].setObjectName(str(i)+str(j))
-                # self.plate[i][j].clicked.connect(
-                #     lambda: self.clickedButton(self.plate[i][j]))
                 self.plate[i][j].move(10+60*i, 10+60*j)
                 self.plate[i][j].resize(60, 60)
 
