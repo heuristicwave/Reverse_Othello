@@ -106,18 +106,20 @@ class CreateGame(QMainWindow, form_class):
         # curPlate = self.plate[i][j]
         # self.plate[i][j].clicked.connect(lambda: self.clickedButton(curPlate))
 
-    # def cell_count(self):
-    #     white = 0
-    #     black = 0
+    def cell_count(self):
+        white = 0
+        black = 0
 
-    #     for i in range(self.BOARD_LEN):
-    #         for j in range(self.BOARD_LEN):
-    #             if self.board[i][j] == self.WHITE_CELL:
-    #                 white += 1
-    #             elif self.board[i][j] == self.BLACK_CELL:
-    #                 black += 1
+        for i in range(self.BOARD_LEN):
+            for j in range(self.BOARD_LEN):
+                if self.plateStatus[i][j] == self.WHITE_CELL:
+                    white += 1
+                elif self.plateStatus[i][j] == self.BLACK_CELL:
+                    black += 1
 
-    #     return black, white
+        self.lcdNumber_2.display(black)
+        self.lcdNumber_3.display(white)
+        #return black, white
 
     def findAvaliable(self):
         self.avaliableLocation = []
@@ -142,12 +144,11 @@ class CreateGame(QMainWindow, form_class):
                         elif self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.EMPTY_CELL:
                             cur_x = x+self.dx[k]
                             cur_y = y+self.dy[k]
-                            # (0, -1) 같은게 안나오도록
+                            # If the edge meets, cur_x or cur_y is negative.
                             if cur_x < 0:
-                                cur_x = 0
+                                continue
                             elif cur_y < 0:
-                                cur_y = 0
-
+                                continue
                             self.avaliableLocation.append([cur_x, cur_y])
         return
 
@@ -173,15 +174,24 @@ class CreateGame(QMainWindow, form_class):
         x = int(position[0])
         y = int(position[1])
 
+        # 코너가 아닐경우 라는 조건문?
+        # if (x==0 and y==0) or (x==0 and y==7) or (x==7 and y==0) or (x==7 and y==7):
+        #     self.plateStatus[x][y] = self.MY_CELL
+        # else :
+            # self.plateStatus[x][y] = self.OP_CELL
         self.plateStatus[x][y] = self.OP_CELL
 
         for i in range(8):
             self.updateBoard(x, y, i)
+        
+        # if (x==0 and y==0) or (x==0 and y==7) or (x==7 and y==0) or (x==7 and y==7):
+        #     print('원래로 복귀')
+        #     self.plateStatus[x][y] = self.MY_CELL
 
         print(self.plateStatus)
         # self.findAvaliable()
 
-        self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL
+        self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
 
         self.findAvaliable()
         self.showMarker()
@@ -227,6 +237,8 @@ class CreateGame(QMainWindow, form_class):
             self.plate[x][y].setIconSize(QSize(20, 20))
             # Avaliable Button Activate
             self.plate[x][y].setEnabled(True)
+        
+        self.cell_count()
 
     def initUI(self):
 
