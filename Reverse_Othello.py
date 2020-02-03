@@ -35,6 +35,19 @@ class CreateGame(QMainWindow, form_class):
         self.findAvaliable()
         self.showMarker()
         self.objectNameActivate()
+        self.btn_2.clicked.connect(self.initGame)
+        self.btn_3.clicked.connect(self.close)
+
+    def initGame(self):
+        # print('init Game')
+
+        self.plateStatus[3][3] = self.WHITE_CELL
+        self.plateStatus[4][4] = self.WHITE_CELL
+        self.plateStatus[3][4] = self.BLACK_CELL
+        self.plateStatus[4][3] = self.BLACK_CELL
+
+        # self.findAvaliable()
+        # self.showMarker()
 
     def objectNameActivate(self):
         # fix error using lambda (TypeError: argument 1 has unexpected type 'NoneType')
@@ -121,43 +134,42 @@ class CreateGame(QMainWindow, form_class):
         self.lcdNumber_3.display(white)
         #return black, white
 
+    # TO-DO, Give a clear range of conditions
     def findAvaliable(self):
         self.avaliableLocation = []
 
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
-                if self.plateStatus[i][j] == self.MY_CELL:
-                    print("find AVALIABLE")
+                if self.plateStatus[i][j] == self.MY_CELL:                    
                     for k in range(8):
                         x, y = i, j
+                        cur_x = x+self.dx[k]
+                        cur_y = y+self.dy[k]
+                        # If the edge meets, cur_x or cur_y is negative.
+                        if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :
+                            # (i, j)를 기준으로 상하좌우 대각선을 dx, dy로 점검
+                            while(self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.OP_CELL):
+                                x = x + self.dx[k]
+                                y = y + self.dy[k]
+                                if self.BOARD_LEN > x >= 0 and self.BOARD_LEN > y >= 0 :
+                                    continue
+                                else:
+                                    break
 
-                        # (i, j)를 기준으로 상하좌우 대각선을 dx, dy로 점검
-                        while(self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.OP_CELL):
-                            print(f'status : {k}')
-                            x = x + self.dx[k]
-                            y = y + self.dy[k]
-
-                        if x == i and y == j:
-                            continue
-                        elif self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.MY_CELL:
-                            continue
-                        elif self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.EMPTY_CELL:
-                            cur_x = x+self.dx[k]
-                            cur_y = y+self.dy[k]
-                            # If the edge meets, cur_x or cur_y is negative.
-                            if cur_x < 0:
-                                continue
-                            elif cur_y < 0:
-                                continue
-                            self.avaliableLocation.append([cur_x, cur_y])
+                            if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :                                        
+                                if x == i and y == j:
+                                    continue
+                                elif self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.MY_CELL:
+                                    continue
+                                elif self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.EMPTY_CELL:
+                                    cur_x = x+self.dx[k]
+                                    cur_y = y+self.dy[k]
+                                    # If the edge meets, cur_x or cur_y is negative.
+                                    if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :
+                                        self.avaliableLocation.append([cur_x, cur_y])
+                            
         return
 
-    def initGame(self):
-        self.plateStatus[3][3] = self.WHITE_CELL
-        self.plateStatus[4][4] = self.WHITE_CELL
-        self.plateStatus[3][4] = self.BLACK_CELL
-        self.plateStatus[4][3] = self.BLACK_CELL
-        # 정보 바탕으로 돌 그리기
 
     def clearAvaliableLoc(self):
         print('removing...')
@@ -174,19 +186,10 @@ class CreateGame(QMainWindow, form_class):
         x = int(position[0])
         y = int(position[1])
 
-        # 코너가 아닐경우 라는 조건문?
-        # if (x==0 and y==0) or (x==0 and y==7) or (x==7 and y==0) or (x==7 and y==7):
-        #     self.plateStatus[x][y] = self.MY_CELL
-        # else :
-            # self.plateStatus[x][y] = self.OP_CELL
         self.plateStatus[x][y] = self.OP_CELL
 
         for i in range(8):
             self.updateBoard(x, y, i)
-        
-        # if (x==0 and y==0) or (x==0 and y==7) or (x==7 and y==0) or (x==7 and y==7):
-        #     print('원래로 복귀')
-        #     self.plateStatus[x][y] = self.MY_CELL
 
         print(self.plateStatus)
         # self.findAvaliable()
@@ -198,7 +201,7 @@ class CreateGame(QMainWindow, form_class):
 
     def updateBoard(self, x, y, direction):
         if self.plateStatus[x][y] == self.MY_CELL:
-            print(f'{self.MY_CELL} found!!!')
+            print(f'{self.MY_CELL} found! x : {x} y : {y} and direction is {direction}')
             return 1
         elif self.plateStatus[x][y] == self.EMPTY_CELL:
             return 0
@@ -207,13 +210,16 @@ class CreateGame(QMainWindow, form_class):
         cur_y = y
         cur_x = cur_x + self.dx[direction]
         cur_y = cur_y + self.dy[direction]
-
-        tmp = self.updateBoard(cur_x, cur_y, direction)
-
-        if tmp:
-            print(f'return 1 : {self.plateStatus[x][y]}')
-            self.plateStatus[x][y] = self.MY_CELL
-            return 1
+        print(f'check1@ cur_x : {cur_x} cur_y : {cur_y} direction : {direction}')
+        if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :
+            tmp = self.updateBoard(cur_x, cur_y, direction)
+            print(f'check2@ cur_x : {cur_x} cur_y : {cur_y} direction : {direction}')
+            if tmp:
+                print(f'direction is {direction} : {self.plateStatus[x][y]} reverse location {x}{y}')
+                print(f'change {self.plateStatus[x][y]} = {self.MY_CELL}')
+                self.plateStatus[x][y] = self.MY_CELL
+                print(self.plateStatus)
+                return 1
 
         return 0
 
