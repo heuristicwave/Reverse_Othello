@@ -1,2 +1,4 @@
 log
-lib
+lib/python/log
+lib/python/__pycache__
+lib/c++
