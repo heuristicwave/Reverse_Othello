@@ -4,10 +4,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *  # QIcon
 from PyQt5.QtWidgets import *  # QApplication, QDesktopWidget, QMainWindow,
 from PyQt5 import uic
+from lib.python.othello import *
 
 # connect ui file in same path
 form_class = uic.loadUiType("Reverse_Othello.ui")[0]
-
 
 class CreateGame(QMainWindow, form_class):
     def __init__(self):
@@ -40,6 +40,8 @@ class CreateGame(QMainWindow, form_class):
         self.btn_2.clicked.connect(self.initGame)
         self.btn_3.clicked.connect(self.close)
 
+        # serverMain = server.__init__(self, "192.168.25.5", 6068)
+
     def gameStart(self):
         gameType = self.comboBox.currentText()
         if self.radioButton_1.isChecked():
@@ -52,11 +54,14 @@ class CreateGame(QMainWindow, form_class):
         self.showMarker()
 
     def serverConnectClicked(self):
-        dlg = LogInDialog()
-        dlg.exec_()
-        id = dlg.id
-        password = dlg.password
-        self.label_5.setText("id: %s password: %s" % (id, password))
+        dialog = ServerConnectDialog()
+        dialog.exec_()
+        serverIp = dialog.ip
+        serverPort = int(dialog.port)
+        # connect server
+        server = Othello
+        serverMain = server.__init__(self, serverIp, serverPort)
+        self.label_5.setText("ip: %s port: %s" % (serverIp, serverPort))
 
     def initGame(self):
         # print('init Game')
@@ -207,6 +212,7 @@ class CreateGame(QMainWindow, form_class):
         y = int(position[1])
 
         self.plateStatus[x][y] = self.OP_CELL
+        self.plate[x][y].setEnabled(False)
 
         for i in range(8):
             self.updateBoard(x, y, i)
@@ -288,14 +294,15 @@ class CreateGame(QMainWindow, form_class):
                 self.plate[i][j].move(10+60*i, 10+60*j)
                 self.plate[i][j].resize(60, 60)
                 self.plate[i][j].setEnabled(False)
+                self.plate[i][j].setStyleSheet("background-color: teal")
 
-class LogInDialog(QDialog):
+class ServerConnectDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.setupUI()
 
-        self.id = None
-        self.password = None
+        self.ip = None
+        self.port = None
 
     def setupUI(self):
         self.setWindowTitle("Server Connect ...")
@@ -318,8 +325,8 @@ class LogInDialog(QDialog):
         self.setLayout(layout)
 
     def pushButtonClicked(self):
-        self.id = self.lineEdit1.text()
-        self.password = self.lineEdit2.text()
+        self.ip = self.lineEdit1.text()
+        self.port = self.lineEdit2.text()
         self.close()
 
 if __name__ == '__main__':
