@@ -4,7 +4,9 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *  # QIcon
 from PyQt5.QtWidgets import *  # QApplication, QDesktopWidget, QMainWindow,
 from PyQt5 import uic
+# from lib.python.board import *
 from lib.python.othello import *
+from communication import *
 
 # connect ui file in same path
 form_class = uic.loadUiType("Reverse_Othello.ui")[0]
@@ -33,7 +35,8 @@ class CreateGame(QMainWindow, form_class):
         self.createBoard()
 
         self.initGame()
-        self.findavailable()
+        # self.findavailable()
+
         self.objectNameActivate()
         
         self.btn_1.clicked.connect(self.gameStart)
@@ -41,6 +44,15 @@ class CreateGame(QMainWindow, form_class):
         self.btn_3.clicked.connect(self.close)
 
         self.server = Othello
+
+    # def gameOver(self): # 카운트 하는거에 3개넣어버려
+    #     if self.remain == 0:
+    #         if self.WHITE_CELL > self.BLACK_CELL:
+    #             QMessageBox.information(self, "GAME OVER", "WHITE WIN \n" + "White = " + str(self.WHITE_CELL) + "\nBlack = " + str(self.BLACK_CELL))
+    #         elif self.BLACK_CELL >self.WHITE_CELL:
+    #             QMessageBox.information(self,"GAME OVER", "BLACK WIN\n"+ "Black = " + str(self.BLACK_CELL) + "\nWhite = " + str(self.WHITE_CELL))
+    #         else:
+    #             QMessageBox.information(self, "GAME OVER", "DRAW" )    
         
     def gameStart(self):
         gameType = self.comboBox.currentText()
@@ -51,19 +63,37 @@ class CreateGame(QMainWindow, form_class):
             self.serverConnectClicked()
             # if gameType == "AI":
             #     #dialog
+        print("show on your board!!")
         self.showMarker()
 
     def serverConnectClicked(self):
         dialog = ServerConnectDialog()
+        
         dialog.exec_()
         serverIp = dialog.ip
         serverPort = int(dialog.port)
         # connect server
         self.server.__init__(self, serverIp, serverPort)
+
         self.label_5.setText("ip: %s port: %s" % (serverIp, serverPort))
 
-        # listen from server
-        self.server.wait_for_turn(self)
+        getWaitForTurn = self.server.wait_for_turn(self)
+        getAvailable = getWaitForTurn[1]
+        serverAvailable = getAvailable['available'].split()
+
+        for i in serverAvailable:
+            xyTuple = convert_1A_to_ij(i)
+            self.availableLocation.append([xyTuple[0], xyTuple[1]])
+
+    def str_to_board(self, board_str):
+        l = 0
+        board = [[self.EMPTY_CELL for x in range(self.BOARD_LEN)] for y in range(self.BOARD_LEN)]
+
+        for i in range(self.BOARD_LEN):
+            for j in range(self.BOARD_LEN):
+                board[i][j] = board_str[l]
+                l += 1
+        return board        
 
     def initGame(self):
         # print('init Game')
@@ -198,7 +228,7 @@ class CreateGame(QMainWindow, form_class):
         return
 
 
-    def clearavailableLoc(self):
+    def clearAvailableLoc(self):
         print('removing...')
         for i in range(len(self.availableLocation)):
             x = self.availableLocation[i][0]
@@ -207,25 +237,15 @@ class CreateGame(QMainWindow, form_class):
             self.plate[x][y].setIcon(QIcon())
 
     def clickedButton(self, btn):        
-        self.clearavailableLoc() # 이미지 삭제
+        self.clearAvailableLoc() # 이미지 삭제
         position = btn.objectName() # type(position) => <class 'str'>
         print(f'position : {position}')
         x = int(position[0])
         y = int(position[1])
 
-        self.plateStatus[x][y] = self.OP_CELL
-        self.plate[x][y].setEnabled(False)
-
-        for i in range(8):
-            self.updateBoard(x, y, i)
-
-        print(self.plateStatus)
-        # self.findavailable()
-
-        self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
-
-        self.findavailable()
-        self.showMarker()
+        setMove = convert_ij_to_1A(x, y)
+        print(setMove)
+        self.server.move(self, setMove)
 
     def updateBoard(self, x, y, direction):
         if self.plateStatus[x][y] == self.MY_CELL:
@@ -271,7 +291,7 @@ class CreateGame(QMainWindow, form_class):
             self.plate[x][y].setIconSize(QSize(20, 20))
             # available Button Activate
             self.plate[x][y].setEnabled(True)
-        
+
         self.cell_count()
 
     def initUI(self):
