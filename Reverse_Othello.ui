@@ -153,6 +153,19 @@
     <string>Game Setting</string>
    </property>
   </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>310</y>
+     <width>261</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Server Connect Info</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
