@@ -31,12 +31,32 @@ class CreateGame(QMainWindow, form_class):
                             for y in range(self.BOARD_LEN)]
         self.avaliableLocation = []
         self.createBoard()
+
         self.initGame()
         self.findAvaliable()
-        self.showMarker()
         self.objectNameActivate()
+        
+        self.btn_1.clicked.connect(self.gameStart)
         self.btn_2.clicked.connect(self.initGame)
         self.btn_3.clicked.connect(self.close)
+
+    def gameStart(self):
+        gameType = self.comboBox.currentText()
+        if self.radioButton_1.isChecked():
+            print("혼자하기")
+        elif self.radioButton_2.isChecked():
+            print("같이하기")
+            self.serverConnectClicked()
+            # if gameType == "AI":
+            #     #dialog
+        self.showMarker()
+
+    def serverConnectClicked(self):
+        dlg = LogInDialog()
+        dlg.exec_()
+        id = dlg.id
+        password = dlg.password
+        self.label_5.setText("id: %s password: %s" % (id, password))
 
     def initGame(self):
         # print('init Game')
@@ -267,7 +287,40 @@ class CreateGame(QMainWindow, form_class):
                 self.plate[i][j].setObjectName(str(i)+str(j))
                 self.plate[i][j].move(10+60*i, 10+60*j)
                 self.plate[i][j].resize(60, 60)
+                self.plate[i][j].setEnabled(False)
 
+class LogInDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setupUI()
+
+        self.id = None
+        self.password = None
+
+    def setupUI(self):
+        self.setWindowTitle("Server Connect ...")
+
+        label1 = QLabel("IP Address ")
+        label2 = QLabel("Port ")
+
+        self.lineEdit1 = QLineEdit()
+        self.lineEdit2 = QLineEdit()
+        self.pushButton1 = QPushButton("Connect")
+        self.pushButton1.clicked.connect(self.pushButtonClicked)
+
+        layout = QGridLayout()
+        layout.addWidget(label1, 0, 0)
+        layout.addWidget(self.lineEdit1, 0, 1)
+        layout.addWidget(self.pushButton1, 0, 2)
+        layout.addWidget(label2, 1, 0)
+        layout.addWidget(self.lineEdit2, 1, 1)
+
+        self.setLayout(layout)
+
+    def pushButtonClicked(self):
+        self.id = self.lineEdit1.text()
+        self.password = self.lineEdit2.text()
+        self.close()
 
 if __name__ == '__main__':
     # QApplication : program start class
