@@ -40,8 +40,8 @@ class CreateGame(QMainWindow, form_class):
         self.btn_2.clicked.connect(self.initGame)
         self.btn_3.clicked.connect(self.close)
 
-        # serverMain = server.__init__(self, "192.168.25.5", 6068)
-
+        self.server = Othello
+        
     def gameStart(self):
         gameType = self.comboBox.currentText()
         if self.radioButton_1.isChecked():
@@ -59,9 +59,11 @@ class CreateGame(QMainWindow, form_class):
         serverIp = dialog.ip
         serverPort = int(dialog.port)
         # connect server
-        server = Othello
-        serverMain = server.__init__(self, serverIp, serverPort)
+        self.server.__init__(self, serverIp, serverPort)
         self.label_5.setText("ip: %s port: %s" % (serverIp, serverPort))
+
+        # listen from server
+        self.server.wait_for_turn(self)
 
     def initGame(self):
         # print('init Game')
