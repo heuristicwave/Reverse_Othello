@@ -29,11 +29,11 @@ class CreateGame(QMainWindow, form_class):
                       for y in range(self.BOARD_LEN)]
         self.plateStatus = [[self.EMPTY_CELL for x in range(self.BOARD_LEN)]
                             for y in range(self.BOARD_LEN)]
-        self.avaliableLocation = []
+        self.availableLocation = []
         self.createBoard()
 
         self.initGame()
-        self.findAvaliable()
+        self.findavailable()
         self.objectNameActivate()
         
         self.btn_1.clicked.connect(self.gameStart)
@@ -73,7 +73,7 @@ class CreateGame(QMainWindow, form_class):
         self.plateStatus[3][4] = self.BLACK_CELL
         self.plateStatus[4][3] = self.BLACK_CELL
 
-        # self.findAvaliable()
+        # self.findavailable()
         # self.showMarker()
 
     def objectNameActivate(self):
@@ -162,8 +162,8 @@ class CreateGame(QMainWindow, form_class):
         #return black, white
 
     # TO-DO, Give a clear range of conditions
-    def findAvaliable(self):
-        self.avaliableLocation = []
+    def findavailable(self):
+        self.availableLocation = []
 
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
@@ -193,21 +193,21 @@ class CreateGame(QMainWindow, form_class):
                                     cur_y = y+self.dy[k]
                                     # If the edge meets, cur_x or cur_y is negative.
                                     if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :
-                                        self.avaliableLocation.append([cur_x, cur_y])
+                                        self.availableLocation.append([cur_x, cur_y])
                             
         return
 
 
-    def clearAvaliableLoc(self):
+    def clearavailableLoc(self):
         print('removing...')
-        for i in range(len(self.avaliableLocation)):
-            x = self.avaliableLocation[i][0]
-            y = self.avaliableLocation[i][1]
+        for i in range(len(self.availableLocation)):
+            x = self.availableLocation[i][0]
+            y = self.availableLocation[i][1]
             print(x,y)
             self.plate[x][y].setIcon(QIcon())
 
     def clickedButton(self, btn):        
-        self.clearAvaliableLoc() # 이미지 삭제
+        self.clearavailableLoc() # 이미지 삭제
         position = btn.objectName() # type(position) => <class 'str'>
         print(f'position : {position}')
         x = int(position[0])
@@ -220,11 +220,11 @@ class CreateGame(QMainWindow, form_class):
             self.updateBoard(x, y, i)
 
         print(self.plateStatus)
-        # self.findAvaliable()
+        # self.findavailable()
 
         self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
 
-        self.findAvaliable()
+        self.findavailable()
         self.showMarker()
 
     def updateBoard(self, x, y, direction):
@@ -263,13 +263,13 @@ class CreateGame(QMainWindow, form_class):
                 elif self.plateStatus[i][j] == self.EMPTY_CELL:
                     self.plate[i][j].setEnabled(False)
 
-        print(self.avaliableLocation)
-        for i in range(len(self.avaliableLocation)):
-            x = self.avaliableLocation[i][0]
-            y = self.avaliableLocation[i][1]
+        print(self.availableLocation)
+        for i in range(len(self.availableLocation)):
+            x = self.availableLocation[i][0]
+            y = self.availableLocation[i][1]
             self.plate[x][y].setIcon(QIcon("./image/Othello icon.png"))
             self.plate[x][y].setIconSize(QSize(20, 20))
-            # Avaliable Button Activate
+            # available Button Activate
             self.plate[x][y].setEnabled(True)
         
         self.cell_count()
