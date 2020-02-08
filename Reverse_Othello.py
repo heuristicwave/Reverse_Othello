@@ -1,6 +1,5 @@
 import sys
 import signal
-import inspect
 import lib.python.othello
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *  # QIcon
@@ -78,9 +77,8 @@ class CreateGame(QMainWindow, form_class):
         serverPort = int(dialog.port)
         # connect server
         othelloLib = Othello(serverIp, serverPort)
-        # print( inspect.getmembers(othelloLib) ) # inspect members
         print(f'print boardStr : {othelloLib.board}')
-        print(str_to_board(othelloLib.board))
+        str_to_board(othelloLib.board)
         self.showMarker()
         # self.othelloLib.__init__(self, serverIp, serverPort)
         self.label_5.setText("ip: %s port: %s" % (serverIp, serverPort))
@@ -91,6 +89,8 @@ class CreateGame(QMainWindow, form_class):
 
 
         while True:
+            cnt = 1
+            print(f'loop test : {cnt}')
             code, data = othelloLib.wait_for_turn()
             if code == 'end':
                 print_board(str_to_board(data['board']))
@@ -105,6 +105,7 @@ class CreateGame(QMainWindow, form_class):
                 for i in getAvailable:
                     xyTuple = convert_1A_to_ij(i)
                     self.availableLocation.append([xyTuple[0], xyTuple[1]])
+            cnt += 1
 
     def str_to_board(self, board_str):
         l = 0
