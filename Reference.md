@@ -27,7 +27,8 @@ python server/othello_game_server.py [port number]
 - [ ] 타임값 받거나 자체적으로 표시한거 체크
 - [ ] 1인용 2인용 리팩토링해서 합치기
 - [ ] AI 올리기 (1. board정보 기반 점수 합치는 코드)
-- [ ] othello.py에서 return 으로 넘어오는 data['board'] 활용하기
+- [x] othello.py에서 return 으로 넘어오는 data['board'] 활용하기
+- [ ] (스레드 처리?)[https://daaam11.tistory.com/19]
 
 
 
@@ -69,3 +70,8 @@ python server/othello_game_server.py [port number]
 
 - ObjectOriented Programming
 
+> TO-DO STUDY
+> Python concurrency control
+> Design Pattern
+> Dynamic programming
+> Heuristic Algorithm
