@@ -24,6 +24,7 @@ class CreateGame(QMainWindow, form_class):
         self.MY_CELL = 'b'
         self.OP_CELL = 'w'
         #self.turn = 'b'
+        othelloLib = 0
 
         self.BOARD_LEN = 8
         self.dx = [-1, -1, -1, 0, 0, 1, 1, 1]
@@ -76,11 +77,11 @@ class CreateGame(QMainWindow, form_class):
         serverIp = dialog.ip
         serverPort = int(dialog.port)
         # connect server
-        othelloLib = Othello(serverIp, serverPort)
-        print(f'print boardStr : {othelloLib.board}')
-        str_to_board(othelloLib.board)
-        self.showMarker()
+        self.othelloLib = Othello(serverIp, serverPort)
+        print(f'print boardStr : {self.othelloLib.board}')
+        self.str_to_board(self.othelloLib.board)
         # self.othelloLib.__init__(self, serverIp, serverPort)
+        self.showMarker()
         self.label_5.setText("ip: %s port: %s" % (serverIp, serverPort))
 
         # getWaitForTurn = self.server.wait_for_turn(self)
@@ -88,34 +89,34 @@ class CreateGame(QMainWindow, form_class):
         # serverAvailable = getAvailable['available'].split()
 
 
-        while True:
-            cnt = 1
-            print(f'loop test : {cnt}')
-            code, data = othelloLib.wait_for_turn()
-            if code == 'end':
-                print_board(str_to_board(data['board']))
-                print("status: " + data['status'] + ' score: ' + data['score'])
-                break
-            elif code == 'turn':
-                print_board(str_to_board(othelloLib.board))
-                print('available: ' + data['available'])
-                # input_corr = input('>>>')
-                # othello.move(input_corr)
-                getAvailable = data['available'].split()
-                for i in getAvailable:
-                    xyTuple = convert_1A_to_ij(i)
-                    self.availableLocation.append([xyTuple[0], xyTuple[1]])
-            cnt += 1
+        # while True: # 흠...
+        cnt = 1
+        print(f'loop test : {cnt}')
+        code, data = self.othelloLib.wait_for_turn()
+        if code == 'end':
+            print_board(str_to_board(data['board']))
+            print("status: " + data['status'] + ' score: ' + data['score'])
+            #break
+        elif code == 'turn':
+            self.str_to_board(self.othelloLib.board)
+            print_board(str_to_board(self.othelloLib.board))
+            print('available: ' + data['available'])
+            # input_corr = input('>>>')
+            # othello.move(input_corr)
+            getAvailable = data['available'].split()
+            for i in getAvailable:
+                xyTuple = convert_1A_to_ij(i)
+                self.availableLocation.append([xyTuple[0], xyTuple[1]])
+        self.showMarker()
+        cnt += 1
 
     def str_to_board(self, board_str):
         l = 0
         #board = [[self.EMPTY_CELL for x in range(self.BOARD_LEN)] for y in range(self.BOARD_LEN)]
-
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
                 self.plateStatus[i][j] = board_str[l]
                 l += 1
-
 
         return self.plateStatus        
 
@@ -269,7 +270,7 @@ class CreateGame(QMainWindow, form_class):
 
         setMove = convert_ij_to_1A(x, y)
         print(setMove)
-        self.server.move(self, setMove)
+        self.othelloLib.move(setMove)
 
     #     # update Receive
     #     self.getServerUpdate()
@@ -305,6 +306,7 @@ class CreateGame(QMainWindow, form_class):
         return 0
 
     def showMarker(self):
+        print('enter in the showMarker')
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
                 if self.plateStatus[i][j] == self.BLACK_CELL:
