@@ -62,6 +62,7 @@ class CreateGame(QMainWindow, form_class):
         gameType = self.comboBox.currentText()
         if self.radioButton_1.isChecked():
             print("혼자하기")
+            self.initGame()
         elif self.radioButton_2.isChecked():
             print("같이하기")
             self.serverConnectClicked()
@@ -84,31 +85,37 @@ class CreateGame(QMainWindow, form_class):
         self.showMarker()
         self.label_5.setText("ip: %s port: %s" % (serverIp, serverPort))
 
-        # getWaitForTurn = self.server.wait_for_turn(self)
-        # getAvailable = getWaitForTurn[1]
-        # serverAvailable = getAvailable['available'].split()
+        self.clientTurn()
 
+    def clientTurn(self):
+        while True: # 흠...
+            code, data = self.othelloLib.wait_for_turn()
+            if code == 'end':
+                print_board(str_to_board(data['board']))
+                print("status: " + data['status'] + ' score: ' + data['score'])
+                break # if not use while, move to another func
+            elif code == 'turn':
+                self.str_to_board(self.othelloLib.board)
+                self.showMarker()
+                print_board(str_to_board(self.othelloLib.board))
+                print('available: ' + data['available'])
+                # input_corr = input('>>>')
+                # othello.move(input_corr)
+                getAvailable = data['available'].split()
+                for i in getAvailable:
+                    xyTuple = convert_1A_to_ij(i)
+                    self.availableLocation.append([xyTuple[0], xyTuple[1]])
 
-        # while True: # 흠...
-        cnt = 1
-        print(f'loop test : {cnt}')
-        code, data = self.othelloLib.wait_for_turn()
-        if code == 'end':
-            print_board(str_to_board(data['board']))
-            print("status: " + data['status'] + ' score: ' + data['score'])
-            #break
-        elif code == 'turn':
-            self.str_to_board(self.othelloLib.board)
-            print_board(str_to_board(self.othelloLib.board))
-            print('available: ' + data['available'])
-            # input_corr = input('>>>')
-            # othello.move(input_corr)
-            getAvailable = data['available'].split()
-            for i in getAvailable:
-                xyTuple = convert_1A_to_ij(i)
-                self.availableLocation.append([xyTuple[0], xyTuple[1]])
-        self.showMarker()
-        cnt += 1
+    # 시행착오
+    #     self.clientUpdate()
+
+    # def clientUpdate(self):
+    #     code, data = self.othelloLib.wait_for_turn()
+    #     if code == 'update':
+    #         self.board = data['board']
+    #         self.str_to_board(self.othelloLib.board)
+        
+    #     self.clientTurn()
 
     def str_to_board(self, board_str):
         l = 0
@@ -121,15 +128,13 @@ class CreateGame(QMainWindow, form_class):
         return self.plateStatus        
 
     def initGame(self):
-        # print('init Game')
-
         self.plateStatus[3][3] = self.WHITE_CELL
         self.plateStatus[4][4] = self.WHITE_CELL
         self.plateStatus[3][4] = self.BLACK_CELL
         self.plateStatus[4][3] = self.BLACK_CELL
 
-        # self.findavailable()
-        # self.showMarker()
+        self.findavailable()
+        self.showMarker()
 
     def objectNameActivate(self):
         # fix error using lambda (TypeError: argument 1 has unexpected type 'NoneType')
@@ -268,18 +273,26 @@ class CreateGame(QMainWindow, form_class):
         x = int(position[0])
         y = int(position[1])
 
-        setMove = convert_ij_to_1A(x, y)
-        print(setMove)
-        self.othelloLib.move(setMove)
 
-    #     # update Receive
-    #     self.getServerUpdate()
+        if self.radioButton_1.isChecked():
+            self.plateStatus[x][y] = self.OP_CELL
+            self.plate[x][y].setEnabled(False)
 
-    # # board값 잘 받아오는지 확인
-    # def getServerUpdate(self):
-    #     code, data = self.server.wait_for_turn(self)
-    #     print("보드 정보를 출력합니다.")
-    #     print(str_to_board(data['board']))
+            for i in range(8):
+                self.updateBoard(x, y, i)
+
+            print(self.plateStatus)
+
+            self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
+
+            self.findavailable() # using play alone
+            self.showMarker()
+
+        elif self.radioButton_2.isChecked():
+            setMove = convert_ij_to_1A(x, y)
+            print(setMove)
+            self.othelloLib.move(setMove)
+
 
     def updateBoard(self, x, y, direction):
         if self.plateStatus[x][y] == self.MY_CELL:
