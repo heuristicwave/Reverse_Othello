@@ -1,5 +1,7 @@
 import sys
 import signal
+import inspect
+import lib.python.othello
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *  # QIcon
 from PyQt5.QtWidgets import *  # QApplication, QDesktopWidget, QMainWindow,
@@ -34,7 +36,7 @@ class CreateGame(QMainWindow, form_class):
         self.availableLocation = []
         self.createBoard()
 
-        self.initGame()
+        #self.initGame() # only for play alone
         # self.findavailable()
 
         self.objectNameActivate()
@@ -43,7 +45,9 @@ class CreateGame(QMainWindow, form_class):
         self.btn_2.clicked.connect(self.initGame)
         self.btn_3.clicked.connect(self.close)
 
-        self.server = Othello
+        # self.othelloLib = Othello
+
+#        self.othelloLib = lib.python.othello.Othello(serverIp, serverPort)
 
     # def gameOver(self): # 카운트 하는거에 3개넣어버려
     #     if self.remain == 0:
@@ -73,27 +77,46 @@ class CreateGame(QMainWindow, form_class):
         serverIp = dialog.ip
         serverPort = int(dialog.port)
         # connect server
-        self.server.__init__(self, serverIp, serverPort)
-
+        othelloLib = Othello(serverIp, serverPort)
+        # print( inspect.getmembers(othelloLib) ) # inspect members
+        print(f'print boardStr : {othelloLib.board}')
+        print(str_to_board(othelloLib.board))
+        self.showMarker()
+        # self.othelloLib.__init__(self, serverIp, serverPort)
         self.label_5.setText("ip: %s port: %s" % (serverIp, serverPort))
 
-        getWaitForTurn = self.server.wait_for_turn(self)
-        getAvailable = getWaitForTurn[1]
-        serverAvailable = getAvailable['available'].split()
+        # getWaitForTurn = self.server.wait_for_turn(self)
+        # getAvailable = getWaitForTurn[1]
+        # serverAvailable = getAvailable['available'].split()
 
-        for i in serverAvailable:
-            xyTuple = convert_1A_to_ij(i)
-            self.availableLocation.append([xyTuple[0], xyTuple[1]])
+
+        while True:
+            code, data = othelloLib.wait_for_turn()
+            if code == 'end':
+                print_board(str_to_board(data['board']))
+                print("status: " + data['status'] + ' score: ' + data['score'])
+                break
+            elif code == 'turn':
+                print_board(str_to_board(othelloLib.board))
+                print('available: ' + data['available'])
+                # input_corr = input('>>>')
+                # othello.move(input_corr)
+                getAvailable = data['available'].split()
+                for i in getAvailable:
+                    xyTuple = convert_1A_to_ij(i)
+                    self.availableLocation.append([xyTuple[0], xyTuple[1]])
 
     def str_to_board(self, board_str):
         l = 0
-        board = [[self.EMPTY_CELL for x in range(self.BOARD_LEN)] for y in range(self.BOARD_LEN)]
+        #board = [[self.EMPTY_CELL for x in range(self.BOARD_LEN)] for y in range(self.BOARD_LEN)]
 
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
-                board[i][j] = board_str[l]
+                self.plateStatus[i][j] = board_str[l]
                 l += 1
-        return board        
+
+
+        return self.plateStatus        
 
     def initGame(self):
         # print('init Game')
@@ -246,6 +269,15 @@ class CreateGame(QMainWindow, form_class):
         setMove = convert_ij_to_1A(x, y)
         print(setMove)
         self.server.move(self, setMove)
+
+    #     # update Receive
+    #     self.getServerUpdate()
+
+    # # board값 잘 받아오는지 확인
+    # def getServerUpdate(self):
+    #     code, data = self.server.wait_for_turn(self)
+    #     print("보드 정보를 출력합니다.")
+    #     print(str_to_board(data['board']))
 
     def updateBoard(self, x, y, direction):
         if self.plateStatus[x][y] == self.MY_CELL:
