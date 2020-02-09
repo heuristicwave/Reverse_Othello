@@ -8,7 +8,7 @@ from PyQt5 import uic
 # from lib.python.board import *
 from lib.python.othello import *
 from communication import *
-
+from minmax import *
 # connect ui file in same path
 form_class = uic.loadUiType("Reverse_Othello.ui")[0]
 
@@ -219,7 +219,8 @@ class CreateGame(QMainWindow, form_class):
 
         self.lcdNumber_2.display(black)
         self.lcdNumber_3.display(white)
-        #return black, white
+        
+        return black, white
 
     # TO-DO, Give a clear range of conditions
     def findavailable(self):
@@ -238,10 +239,14 @@ class CreateGame(QMainWindow, form_class):
                             while(self.plateStatus[x+self.dx[k]][y+self.dy[k]] == self.OP_CELL):
                                 x = x + self.dx[k]
                                 y = y + self.dy[k]
-                                if self.BOARD_LEN > x >= 0 and self.BOARD_LEN > y >= 0 :
+                                if self.BOARD_LEN > x+self.dx[k] >= 0 and self.BOARD_LEN > y+self.dy[k] >= 0 :
                                     continue
                                 else:
                                     break
+
+                            # 2줄 밑 경계값 검사
+                            if not (self.BOARD_LEN > x+self.dx[k] >= 0 and self.BOARD_LEN > y+self.dy[k] >= 0) :
+                                break
 
                             if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :                                        
                                 if x == i and y == j:
@@ -255,7 +260,18 @@ class CreateGame(QMainWindow, form_class):
                                     if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :
                                         self.availableLocation.append([cur_x, cur_y])
                             
-        return
+        # 없을때 턴넘기기 & 게임 종료
+        if len(self.availableLocation) is 0:
+            black, white = self.cell_count()
+            total = black + white
+
+            if total is 64:
+                print('game end')
+            else:
+                print('pass turn')
+                return 1
+
+        return 0
 
 
     def clearAvailableLoc(self):
@@ -266,6 +282,47 @@ class CreateGame(QMainWindow, form_class):
             print(x,y)
             self.plate[x][y].setIcon(QIcon())
 
+    def clickedByComputer(self):
+        minimax = Minimax()
+        getCell = minimax.calc(self.availableLocation)
+
+        x = int(getCell[0])
+        y = int(getCell[1])
+
+        
+        self.plate[x][y].setEnabled(False)
+
+        for i in range(8):
+            self.plateStatus[x][y] = self.OP_CELL
+            self.updateBoard(x, y, i)
+
+        self.plateStatus[x][y] = self.MY_CELL
+        #print(self.plateStatus)
+        #self.printBoard()
+
+        self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
+        self.printBoard()
+        print(self.MY_CELL, self.OP_CELL)
+        checkTurn = self.findavailable() # using play alone
+
+        self.showMarker()
+
+
+        if checkTurn is 1:
+            print('client nothing to do')
+            self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL
+            tmp = self.findavailable()
+            if (tmp is 1):
+                print('computer after computer nothing to do')
+                self.printBoard()
+                print(self.MY_CELL, self.OP_CELL)
+                self.findavailable()
+                self.showMarker()
+            else:
+                self.clickedByComputer()
+        else: # return 0
+            pass
+
     def clickedButton(self, btn):        
         self.clearAvailableLoc() # 이미지 삭제
         position = btn.objectName() # type(position) => <class 'str'>
@@ -275,17 +332,26 @@ class CreateGame(QMainWindow, form_class):
 
 
         if self.radioButton_1.isChecked():
-            self.plateStatus[x][y] = self.OP_CELL
             self.plate[x][y].setEnabled(False)
 
             for i in range(8):
+                self.plateStatus[x][y] = self.OP_CELL
                 self.updateBoard(x, y, i)
 
-            print(self.plateStatus)
+            self.plateStatus[x][y] = self.MY_CELL
+            #print(self.plateStatus)
+            #self.printBoard()
 
             self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
 
-            self.findavailable() # using play alone
+            checkTurn = self.findavailable() # using play alone
+
+            if checkTurn is 1:
+                print('computer nothing to do')
+                self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
+            else:
+                self.clickedByComputer()
+
             self.showMarker()
 
         elif self.radioButton_2.isChecked():
@@ -296,7 +362,8 @@ class CreateGame(QMainWindow, form_class):
 
     def updateBoard(self, x, y, direction):
         if self.plateStatus[x][y] == self.MY_CELL:
-            print(f'{self.MY_CELL} found! x : {x} y : {y} and direction is {direction}')
+            #print(self.MY_CELL, self.OP_CELL)
+            #print(f'{self.MY_CELL} found! x : {x} y : {y} and direction is {direction}')
             return 1
         elif self.plateStatus[x][y] == self.EMPTY_CELL:
             return 0
@@ -305,15 +372,15 @@ class CreateGame(QMainWindow, form_class):
         cur_y = y
         cur_x = cur_x + self.dx[direction]
         cur_y = cur_y + self.dy[direction]
-        print(f'check1@ cur_x : {cur_x} cur_y : {cur_y} direction : {direction}')
+        #print(f'check1@ cur_x : {cur_x} cur_y : {cur_y} direction : {direction}')
         if self.BOARD_LEN > cur_x >= 0 and self.BOARD_LEN > cur_y >= 0 :
             tmp = self.updateBoard(cur_x, cur_y, direction)
-            print(f'check2@ cur_x : {cur_x} cur_y : {cur_y} direction : {direction}')
+            #print(f'check2@ cur_x : {cur_x} cur_y : {cur_y} direction : {direction}')
             if tmp:
-                print(f'direction is {direction} : {self.plateStatus[x][y]} reverse location {x}{y}')
-                print(f'change {self.plateStatus[x][y]} = {self.MY_CELL}')
+                #print(f'direction is {direction} : {self.plateStatus[x][y]} reverse location {x}{y}')
+                #print(f'change {self.plateStatus[x][y]} = {self.MY_CELL}')
                 self.plateStatus[x][y] = self.MY_CELL
-                print(self.plateStatus)
+                #print(self.plateStatus)
                 return 1
 
         return 0
@@ -365,6 +432,12 @@ class CreateGame(QMainWindow, form_class):
                 self.plate[i][j].resize(60, 60)
                 self.plate[i][j].setEnabled(False)
                 self.plate[i][j].setStyleSheet("background-color: teal")
+
+    def printBoard(self):
+        for i in range(self.BOARD_LEN):
+            for j in range(self.BOARD_LEN):
+                print(self.plateStatus[j][i],end='')
+            print()
 
 class ServerConnectDialog(QDialog):
     def __init__(self):
