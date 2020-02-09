@@ -20,8 +20,8 @@ python server/othello_game_server.py [port number]
 
 ## TO-DO
 
-- [ ] (2,3) 정상작동, (5,4) 비정상 => 재귀 과정에서 direction 하나를 건너뛰는듯
-- [ ] 경계값 처리 후 전환, 모서리에 두면 리버스가 안됨
+- [x] (2,3) 정상작동, (5,4) 비정상 => 재귀 과정에서 direction 하나를 건너뛰는듯
+- [x] 경계값 처리 후 전환, 모서리에 두면 리버스가 안됨
 - [ ] 대국 종료 조건 구현(둘다 avaliable이 없을 경우, 64수를 둔 경우) - qmessageBox
 - [x] 같이하기 진행시 ServerIP 와 ServerPort 받고 연결하는 GUI
 - [ ] 타임값 받거나 자체적으로 표시한거 체크
