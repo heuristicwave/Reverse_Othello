@@ -1,12 +1,13 @@
 import sys
-
 from .client import *
 from .msg import *
 from .log import *
+from PyQt5.QtCore import QThread
 
 
-class Othello:
+class Othello(QThread):
     def __init__(self, ip, port):
+        QThread.__init__(self)
         print(f"recv ip : {ip}, port : {port}")
         self.client_socket = Client(ip, port)
         self.log = Log()
@@ -45,6 +46,7 @@ class Othello:
 
             if code == 'turn':
                 self.log.write("turn: " + data['available'])
+                # data ==> {'available': '3D 4C 5F 6E'} Type : <class 'dict'>
                 return code, data
             elif code == 'update':
                 self.board = data['board']
