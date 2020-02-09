@@ -23,7 +23,7 @@ class CreateGame(QMainWindow, form_class):
         self.EMPTY_CELL = '0'
         self.MY_CELL = 'b'
         self.OP_CELL = 'w'
-        #self.turn = 'b'
+        self.TURN = 0
         othelloLib = 0
 
         self.BOARD_LEN = 8
@@ -42,27 +42,25 @@ class CreateGame(QMainWindow, form_class):
         self.objectNameActivate()
         
         self.btn_1.clicked.connect(self.gameStart)
-        self.btn_2.clicked.connect(self.initGame)
+        self.btn_2.clicked.connect(self.close) # initGame
         self.btn_3.clicked.connect(self.close)
 
-        # self.othelloLib = Othello
-
-#        self.othelloLib = lib.python.othello.Othello(serverIp, serverPort)
-
-    # def gameOver(self): # 카운트 하는거에 3개넣어버려
-    #     if self.remain == 0:
-    #         if self.WHITE_CELL > self.BLACK_CELL:
-    #             QMessageBox.information(self, "GAME OVER", "WHITE WIN \n" + "White = " + str(self.WHITE_CELL) + "\nBlack = " + str(self.BLACK_CELL))
-    #         elif self.BLACK_CELL >self.WHITE_CELL:
-    #             QMessageBox.information(self,"GAME OVER", "BLACK WIN\n"+ "Black = " + str(self.BLACK_CELL) + "\nWhite = " + str(self.WHITE_CELL))
-    #         else:
-    #             QMessageBox.information(self, "GAME OVER", "DRAW" )    
+    def gameOver(self):
+        black, white = self.cell_count()
+        if white < black:
+            QMessageBox.information(self, "GAME OVER", "WHITE WIN \n" + "White = " + str(white) + "\nBlack = " + str(black))
+        elif black < white:
+            QMessageBox.information(self,"GAME OVER", "BLACK WIN\n"+ "Black = " + str(black) + "\nWhite = " + str(white))
+        else:
+            QMessageBox.information(self, "GAME OVER", "DRAW" )    
         
     def gameStart(self):
         gameType = self.comboBox.currentText()
         if self.radioButton_1.isChecked():
             print("혼자하기")
             self.initGame()
+            self.findavailable()
+            self.showMarker()
         elif self.radioButton_2.isChecked():
             print("같이하기")
             self.serverConnectClicked()
@@ -72,13 +70,12 @@ class CreateGame(QMainWindow, form_class):
         self.showMarker()
 
     def serverConnectClicked(self):
-        dialog = ServerConnectDialog()
-        
+        dialog = ServerConnectDialog()        
         dialog.exec_()
         serverIp = dialog.ip
         serverPort = int(dialog.port)
         # connect server
-        self.othelloLib = Othello(serverIp, serverPort)
+        self.othelloLib = Othello(serverIp, serverPort).start()
         print(f'print boardStr : {self.othelloLib.board}')
         self.str_to_board(self.othelloLib.board)
         # self.othelloLib.__init__(self, serverIp, serverPort)
@@ -133,8 +130,8 @@ class CreateGame(QMainWindow, form_class):
         self.plateStatus[3][4] = self.BLACK_CELL
         self.plateStatus[4][3] = self.BLACK_CELL
 
-        self.findavailable()
-        self.showMarker()
+        # self.findavailable()
+        # self.showMarker()
 
     def objectNameActivate(self):
         # fix error using lambda (TypeError: argument 1 has unexpected type 'NoneType')
@@ -202,9 +199,6 @@ class CreateGame(QMainWindow, form_class):
         self.plate[7][5].clicked.connect(lambda: self.clickedButton(self.plate[7][5]))        
         self.plate[7][6].clicked.connect(lambda: self.clickedButton(self.plate[7][6]))        
         self.plate[7][7].clicked.connect(lambda: self.clickedButton(self.plate[7][7]))
-        # iterator로 아래처럼하면 소멸되어 7,7 만남음
-        # curPlate = self.plate[i][j]
-        # self.plate[i][j].clicked.connect(lambda: self.clickedButton(curPlate))
 
     def cell_count(self):
         white = 0
@@ -225,6 +219,13 @@ class CreateGame(QMainWindow, form_class):
     # TO-DO, Give a clear range of conditions
     def findavailable(self):
         self.availableLocation = []
+
+        self.TURN += 1
+        print(f'check turn num : {self.TURN}')
+
+        if self.TURN is 3:
+            print('경기 종료 해야할듯')
+            self.gameOver()   
 
         for i in range(self.BOARD_LEN):
             for j in range(self.BOARD_LEN):
@@ -262,11 +263,19 @@ class CreateGame(QMainWindow, form_class):
                             
         # 없을때 턴넘기기 & 게임 종료
         if len(self.availableLocation) is 0:
+            self.TURN += 1
+            print(f'check turn num : {self.TURN}')
+            if self.TURN is 3:
+                print('더이상 둘곳이없습니다 종료 하세요')
+                self.gameOver()
+            print('Turn Pass')
             black, white = self.cell_count()
             total = black + white
 
             if total is 64:
                 print('game end')
+                dialog = ShowResult()        
+                dialog.exec_()
             else:
                 print('pass turn')
                 return 1
@@ -283,12 +292,13 @@ class CreateGame(QMainWindow, form_class):
             self.plate[x][y].setIcon(QIcon())
 
     def clickedByComputer(self):
+        self.TURN -= 1
+        print(f'check turn num : {self.TURN}')
         minimax = Minimax()
         getCell = minimax.calc(self.availableLocation)
 
         x = int(getCell[0])
         y = int(getCell[1])
-
         
         self.plate[x][y].setEnabled(False)
 
@@ -302,7 +312,7 @@ class CreateGame(QMainWindow, form_class):
 
         self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
         self.printBoard()
-        print(self.MY_CELL, self.OP_CELL)
+        print(f'현재 차례 {self.MY_CELL}, 상대방 :{self.OP_CELL}')
         checkTurn = self.findavailable() # using play alone
 
         self.showMarker()
@@ -311,15 +321,19 @@ class CreateGame(QMainWindow, form_class):
         if checkTurn is 1:
             print('client nothing to do')
             self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL
-            tmp = self.findavailable()
-            if (tmp is 1):
-                print('computer after computer nothing to do')
-                self.printBoard()
-                print(self.MY_CELL, self.OP_CELL)
-                self.findavailable()
-                self.showMarker()
-            else:
-                self.clickedByComputer()
+            self.findavailable()
+            self.showMarker()
+
+
+            # tmp = self.findavailable()
+            # if (tmp is 1):
+            #     print('computer after computer nothing to do')
+            #     self.printBoard()
+            #     print(self.MY_CELL, self.OP_CELL)
+            #     self.findavailable()
+            #     self.showMarker()
+            # else:
+            #     self.clickedByComputer()
         else: # return 0
             pass
 
@@ -347,9 +361,13 @@ class CreateGame(QMainWindow, form_class):
             checkTurn = self.findavailable() # using play alone
 
             if checkTurn is 1:
-                print('computer nothing to do')
+                print('computer nothing to do')                
                 self.MY_CELL, self.OP_CELL = self.OP_CELL, self.MY_CELL # turn swap
+                self.TURN -= 1
+                print(f'check turn num : {self.TURN}')
             else:
+                self.TURN -= 1
+                print(f'check turn num : {self.TURN}')
                 self.clickedByComputer()
 
             self.showMarker()
@@ -362,7 +380,7 @@ class CreateGame(QMainWindow, form_class):
 
     def updateBoard(self, x, y, direction):
         if self.plateStatus[x][y] == self.MY_CELL:
-            #print(self.MY_CELL, self.OP_CELL)
+            print(self.MY_CELL, self.OP_CELL)
             #print(f'{self.MY_CELL} found! x : {x} y : {y} and direction is {direction}')
             return 1
         elif self.plateStatus[x][y] == self.EMPTY_CELL:
@@ -380,7 +398,7 @@ class CreateGame(QMainWindow, form_class):
                 #print(f'direction is {direction} : {self.plateStatus[x][y]} reverse location {x}{y}')
                 #print(f'change {self.plateStatus[x][y]} = {self.MY_CELL}')
                 self.plateStatus[x][y] = self.MY_CELL
-                #print(self.plateStatus)
+                print(self.plateStatus)
                 return 1
 
         return 0
