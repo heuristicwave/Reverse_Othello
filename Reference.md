@@ -1,12 +1,15 @@
 ## 개발에 필요한 사이트
 [Free Image](https://www.flaticon.com/home)
+
 [Color Keyword](https://www.w3.org/TR/SVG11/types.html#ColorKeywords)
 
 [Othello Server Protocol](https://gitlab.com/UNKNOWN.UN/othello_protocol?fbclid=IwAR0ZRm-jF_qs_Svtq8qf3y0QtyqS4GF_uyDLXyyttxhvMTh7wZnTVe0LTLY)
 
 
 
-## Server
+## Usage
+
+### Server
 
 requirements: Python 3.7
 
@@ -14,6 +17,12 @@ To run the server.
 
 ```
 python server/othello_game_server.py [port number]
+```
+
+### Client
+
+```
+python Reverse_Othllo.py
 ```
 
 
@@ -24,11 +33,11 @@ python server/othello_game_server.py [port number]
 - [x] 경계값 처리 후 전환, 모서리에 두면 리버스가 안됨
 - [x] 대국 종료 조건 구현(둘다 avaliable이 없을 경우, 64수를 둔 경우) - qmessageBox
 - [x] 같이하기 진행시 ServerIP 와 ServerPort 받고 연결하는 GUI
-- [ ] 타임값 받거나 자체적으로 표시한거 체크
-- [ ] 1인용 2인용 리팩토링해서 합치기
+- [x] 타임값 받거나 자체적으로 표시한거 체크
+- [x] 1인용 2인용 & Human, Ai 리팩토링해서 합치기
 - [x] AI 올리기 (1. board정보 기반 점수 합치는 코드)
 - [x] othello.py에서 return 으로 넘어오는 data['board'] 활용하기
-- [x] (스레드)[http://i5on9i.blogspot.com/2016/05/qt-worker-thread.html]
+- [x] [스레드](http://i5on9i.blogspot.com/2016/05/qt-worker-thread.html)
 
 
 
@@ -42,8 +51,6 @@ python server/othello_game_server.py [port number]
   self.server = Othello # access other class(name:Othello)
   test = self.server.wait_for_turn(self) # access other class member var
   ```
-
-  
 
 - string slicem, merge in python 
 
@@ -70,7 +77,17 @@ python server/othello_game_server.py [port number]
 
 - ObjectOriented Programming
 
-> TO-DO STUDY
+- GUI Thread Programming
+
+  - Qthread
+  - threaing
+
+
+
+> **TO-DO STUDY**
+>
+> 
+>
 > Python concurrency control
 > Design Pattern
 > Dynamic programming
