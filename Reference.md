@@ -25,6 +25,10 @@ python server/othello_game_server.py [port number]
 python Reverse_Othllo.py
 ```
 
+### Game
+
+![game_screen](.\image\Demo.png)
+
 
 
 ## TO-DO
