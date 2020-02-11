@@ -23,5 +23,4 @@ python Reverse_Othllo.py
 
 ### Game
 
-![game_screen](C:/Users/heuri/Documents/GitHub/Reverse_Othello/image/Demo.png)
-
+![game_screen](image/Demo.png)
