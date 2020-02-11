@@ -27,7 +27,7 @@ python Reverse_Othllo.py
 
 ### Game
 
-![game_screen](.\image\Demo.png)
+![game_screen](image/Demo.png)
 
 
 
@@ -92,9 +92,9 @@ python Reverse_Othllo.py
 >
 > 
 >
-> Python concurrency control
-> Design Pattern
-> Dynamic programming
-> Heuristic Algorithm
-> [thread & queue](https://niceman.tistory.com/140?category=940952)
+> - Python concurrency control
+> - Design Pattern
+> - Dynamic programming
+> - Heuristic Algorithm
+> - [thread & queue](https://niceman.tistory.com/140?category=940952)
 
