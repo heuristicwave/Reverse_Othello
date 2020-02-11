@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>785</width>
+    <width>793</width>
     <height>501</height>
    </rect>
   </property>
@@ -17,14 +17,21 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>110</y>
-     <width>261</width>
+     <y>160</y>
+     <width>271</width>
      <height>61</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QLabel" name="label_3">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>TIME</string>
       </property>
@@ -39,27 +46,55 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>10</y>
-     <width>261</width>
+     <y>20</y>
+     <width>271</width>
      <height>71</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <widget class="QLabel" name="label_1">
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>BLACK</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLCDNumber" name="lcdNumber_2"/>
+     <widget class="QLCDNumber" name="lcdNumber_2">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+     </widget>
     </item>
     <item>
-     <widget class="QLCDNumber" name="lcdNumber_3"/>
+     <widget class="QLCDNumber" name="lcdNumber_3">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="label_2">
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>WHITE</string>
       </property>
@@ -72,7 +107,7 @@
     <rect>
      <x>671</x>
      <y>390</y>
-     <width>101</width>
+     <width>111</width>
      <height>100</height>
     </rect>
    </property>
@@ -104,8 +139,8 @@
    <property name="geometry">
     <rect>
      <x>511</x>
-     <y>229</y>
-     <width>261</width>
+     <y>279</y>
+     <width>271</width>
      <height>61</height>
     </rect>
    </property>
@@ -144,10 +179,17 @@
    <property name="geometry">
     <rect>
      <x>512</x>
-     <y>190</y>
+     <y>240</y>
      <width>251</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Game Setting</string>
@@ -157,13 +199,52 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>310</y>
-     <width>261</width>
-     <height>21</height>
+     <y>350</y>
+     <width>271</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Server Connect Info</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>100</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit_2">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>100</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
   </widget>
  </widget>
