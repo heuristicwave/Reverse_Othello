@@ -3,31 +3,7 @@
 
 [Color Keyword](https://www.w3.org/TR/SVG11/types.html#ColorKeywords)
 
-[Othello Server Protocol](https://gitlab.com/UNKNOWN.UN/othello_protocol?fbclid=IwAR0ZRm-jF_qs_Svtq8qf3y0QtyqS4GF_uyDLXyyttxhvMTh7wZnTVe0LTLY)
 
-
-
-## Usage
-
-### Server
-
-requirements: Python 3.7
-
-To run the server.
-
-```
-python server/othello_game_server.py [port number]
-```
-
-### Client
-
-```
-python Reverse_Othllo.py
-```
-
-### Game
-
-![game_screen](image/Demo.png)
 
 
 
